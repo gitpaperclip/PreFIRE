@@ -36,7 +36,6 @@ plt.xticks(rotation=45, ha='right')
 
 # Display the plot
 plt.tight_layout()
-plt.text()
 plt.show()
 
 plt.savefig('usfs_plot.png')

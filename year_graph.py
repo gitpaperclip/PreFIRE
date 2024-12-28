@@ -14,10 +14,8 @@ filteryear = filteryear.dropna(subset=['FIREYEAR'])
 # read each data as CORRECT File type to ensure plot appears correctly
 filteryear['FIREYEAR'].astype(int)
 
-# Create a new column 'decade' by flooring FIREYEAR to the nearest multiple of 10
 filteryear['YEAR_INT_FILTER'] = (filteryear['FIREYEAR'] // 1) * 1
 
-# Group by 'decade' and count the number of occurrences
 totalcounts = filteryear['YEAR_INT_FILTER'].value_counts().sort_index()
 
 rolling_avg = totalcounts.rolling(window=5).mean()
