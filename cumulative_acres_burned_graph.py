@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 
 print(pd.__version__)
 
+
 data_path = "usfs_data.csv"
 
 
