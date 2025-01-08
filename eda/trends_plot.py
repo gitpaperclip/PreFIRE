@@ -27,35 +27,30 @@ average_acres_burned_per_year.columns = ['year', 'avg_acres_year']
 average_time_to_put_out_per_year = data[data['time_to_put_out'] > 0].groupby('year')['time_to_put_out'].mean().reset_index()
 average_time_to_put_out_per_year.columns = ['year', 'avg_time_year']
 
+# Perform seasonal decomposition by annual period on the average acres burned per year
+average_acres_burned_per_year.set_index('year', inplace=True)
+aaDeco = seasonal_decompose(average_acres_burned_per_year['avg_acres_year'], model='additive', period=12)
+
+# Perform seasonal decomposition by annual period on the average time to put out per year
+average_time_to_put_out_per_year.set_index('year', inplace=True)
+ttoDeco = seasonal_decompose(average_time_to_put_out_per_year['avg_time_year'], model='additive', period=12)
 
 
+# Convert the seasonal decompositions results to a DataFrame for plotting with plotnine
+seasonal_df = pd.DataFrame({
+    'year': average_acres_burned_per_year.index,
+    'aadeco': aaDeco.trend,
+    'ttodeco': ttoDeco.trend,
+}).reset_index(drop=True).dropna()
 
-pathplot = (ggplot(data, aes(x='average_acres_burned_df', y='average_time_out_df', color='year'))
+
+pathplot = (ggplot(seasonal_df, aes(x='aadeco', y='ttodeco', color='year'))
     + geom_path()
     + labs(title='Acres vs Time to Put out with year as color',
-           x='Average Acres burned',
-           y='Average time to put out'))
+           x='Average Acres Burned trend', 
+           y='Time to Put Out Fire Trend'))
 
-avgacres = (ggplot(data, aes(x='year', y='avg_acres_year', color='year'))
-    + geom_line()
-    + labs(title='Year vs Average Acres Burned',
-           x='Year',
-           y='Average Acres Burned'))
-
-rollingacres  = (ggplot(data, aes(x='year', y='seasonal_df', color='year'))
-    + geom_point()
-    + labs(title='Year vs Average Acres Burned',
-           x='Year',
-           y='Average Acres Burned'))
-
-avgtimeout = (ggplot(data, aes(x='year', y='avg_time_year', color='year'))
-    + geom_line()
-    + labs(title='Year vs Average Time To Put Out',
-           x='Year',
-           y='Average Time To Put Out'))
-
-
-#seasonal_plot.save('results-gen\\rolling.png')
+pathplot.save('avg_pathplots\\trends.png')
 # Save the new plots
 #avgtimeout.save('results-gen\\average_time_to_put_out_plot.png')
 # Save the plot
