@@ -19,17 +19,14 @@ data = data[(data['time_to_put_out'] > 0) & (data['time_to_put_out'] <= 365)]
 data['year'] = pd.read_csv(data_path, usecols=['FIREYEAR'])
 data = data[data['year'] > 1900]
 
+average_acres_burned_per_year = data[data['acres_burned'] > 0].groupby('year')['acres_burned'].mean().reset_index()
+average_acres_burned_per_year.columns = ['year', 'avg_acres_year']
 
 # Calculate average time to put out per year
 average_time_to_put_out_per_year = data[data['time_to_put_out'] > 0].groupby('year')['time_to_put_out'].mean().reset_index()
 average_time_to_put_out_per_year.columns = ['year', 'avg_time_year']
 
 
-acres_burned_vs_year = (ggplot(data, aes(x='year', y='acres_burned', color='year'))
-    + geom_point()
-    + labs(title='Year vs Acres Burned',
-           x='year',
-           y='acres burned'))
 
 
 pathplot = (ggplot(data, aes(x='average_acres_burned_df', y='average_time_out_df', color='year'))
