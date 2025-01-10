@@ -28,9 +28,13 @@ geo_df = geo_df.to_crs(california.crs)
 
 # Perform a spatial join to filter points within California
 df_cleaned = gpd.sjoin(geo_df, california, predicate='within')
+df_cleaned = df_cleaned[df_cleaned['FIREYEAR'] > 2000]
+df_cleaned = df_cleaned[df_cleaned['TOTALACRES'] > 10].dropna()
 
 latonly = df_cleaned['LATDD83'].dropna()
 longonly = df_cleaned['LONGDD83'].dropna()
+
+
 
 map_center = [37.0902, -95.7129]  # Approximate center of the US
 us_map = folium.Map(location=map_center, zoom_start=5)
