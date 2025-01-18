@@ -10,8 +10,9 @@ print(pd.__version__)
 data_path = "resources\\usfs_data.csv"
 
 
-location_data_lat_long = pd.read_csv(data_path, usecols=['LATDD83', 'LONGDD83', 'TOTALACRES'])
-df_cleaned = location_data_lat_long.dropna(subset=['LATDD83', 'LONGDD83', 'TOTALACRES'])
+location_data_lat_long = pd.read_csv(data_path, usecols=['LATDD83', 'LONGDD83', 'TOTALACRES', 'FIREYEAR'])
+df_cleaned = location_data_lat_long.dropna(subset=['LATDD83', 'LONGDD83', 'TOTALACRES', 'FIREYEAR'])
+df_cleaned = df_cleaned[df_cleaned['FIREYEAR'] > 2000]
 
 latonly = df_cleaned['LATDD83']
 longonly = df_cleaned['LONGDD83']
@@ -27,9 +28,10 @@ heat_data = [[lat, lon] for lat, lon in zip(latonly, longonly)]
 # Add the heatmap layer with custom range and opacity
 HeatMap(
     heat_data,
-    radius=1,           # Adjust radius for individual points
-    blur=1,             # Control the amount of blur (smoothness)
-    min_opacity=0,     # Adjust the lowest opacity for low intensity areas
+    radius=8,           # Increase radius for better visibility
+    blur=4,             # Adjust blur for smoothness
+    min_opacity=0.2,    # Increase minimum opacity for better visibility of low intensity areas
+    max_zoom=1,         # Adjust max zoom for better clarity
 ).add_to(us_map)
 
 

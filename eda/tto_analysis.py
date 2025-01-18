@@ -17,7 +17,7 @@ data = data[data['end_time'] >= data['start_time']]
 data['time_to_put_out'] = (data['end_time'] - data['start_time']).dt.total_seconds() / (24 * 3600)  # Convert to days
 data = data[(data['time_to_put_out'] > 0) & (data['time_to_put_out'] <= 365)]
 data['year'] = pd.read_csv(data_path, usecols=['FIREYEAR'])
-data = data[data['year'] > 1900]
+data = data[data['year'] > 1986]
 
 
 # Calculate average time to put out per year
@@ -53,9 +53,9 @@ tto_seasonal_plot = (ggplot(tto_seasonal_df, aes(x='year', y='seasonal'))
 # Plot the trend component
 tto_trend_plot = (ggplot(tto_seasonal_df, aes(x='year', y='trend'))
     + geom_line()
-    + labs(title='Trend Component of Average FireOut Time',
+    + labs(title='Fire Suppression Time Trend, National Average',
            x='Year',
-           y='Avg. Fire Out Time (days)'))
+           y='Time to Put Out Fire (days, deasonalized)'))
 
 # Plot the residual component
 tto_resid_plot = (ggplot(tto_seasonal_df, aes(x='year', y='resid'))
@@ -66,7 +66,7 @@ tto_resid_plot = (ggplot(tto_seasonal_df, aes(x='year', y='resid'))
 
 # Save the plots
 #tto_seasonal_plot.save('results-gen/tto_seasonal.png')
-#tto_trend_plot.save('results-gen/tto_trend.png')
+tto_trend_plot.save('results-gen/tto_trend.png')
 #tto_resid_plot.save('results-gen/tto_residual.png')
 
 

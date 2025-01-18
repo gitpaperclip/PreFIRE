@@ -6,7 +6,7 @@ print(pd.__version__)
 data_path = "resources\\usfs_data.csv"
 
 
-causes = pd.read_csv(data_path, usecols=['STATCAUSE'])
+causes = pd.read_csv(data_path, usecols=['STATCAUSE', 'TOTALACRES'])
 
 
 # read causes as strings
@@ -15,9 +15,9 @@ causes['STATCAUSE'].astype(str)
 # cause count graphing
 cause_counts = causes['STATCAUSE'].value_counts()
 defined_categories = ['Lightning', 'Undetermined', 'Camping', 'Equipment', 'Incendiary', 'Debris/Open Burning', 'Other Human Cause', 'Arson']
-usfs_filtered_causes = causes[causes['STATCAUSE'].isin(defined_categories)].value_counts()
+usfs_filtered_causes = causes[(causes['STATCAUSE'].isin(defined_categories)) & (causes['TOTALACRES'] > 1000)]
 
-all_other_causes = causes['STATCAUSE'].apply(
+all_other_causes = usfs_filtered_causes['STATCAUSE'].apply(
     lambda x: x if x in defined_categories else 'Other'
 )
 

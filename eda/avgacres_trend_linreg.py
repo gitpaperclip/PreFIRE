@@ -20,7 +20,7 @@ data['acres_burned'] = pd.read_csv(data_path, usecols=['TOTALACRES'])
 data['year'] = pd.read_csv(data_path, usecols=['FIREYEAR'])
 
 #modify range
-data = data[data['year'] > 1900]
+data = data[data['year'] > 1950]
 
 
 # Calculate average acres burned per year, only for years where fires occurred

@@ -18,7 +18,8 @@ data['time_to_put_out'] = (data['end_time'] - data['start_time']).dt.total_secon
 data = data[(data['time_to_put_out'] > 0) & (data['time_to_put_out'] <= 365)]
 data['acres_burned'] = pd.read_csv(data_path, usecols=['TOTALACRES'])
 data['year'] = pd.read_csv(data_path, usecols=['FIREYEAR'])
-data = data[data['year'] > 1900]
+data = data[data['year'] > 1999]
+data = data[data['acres_burned'] > 10].dropna()
 
 average_acres_burned_per_year = data[data['acres_burned'] > 0].groupby('year')['acres_burned'].mean().reset_index()
 average_acres_burned_per_year.columns = ['year', 'avg_acres_year']
@@ -46,9 +47,9 @@ seasonal_df = pd.DataFrame({
 
 pathplot = (ggplot(seasonal_df, aes(x='aadeco', y='ttodeco', color='year'))
     + geom_path()
-    + labs(title='Acres vs Time to Put out with year as color',
-           x='Average Acres Burned trend', 
-           y='Time to Put Out Fire Trend'))
+    + labs(title='Acreage vs Suppression Time, National',
+           x='Average Acres Burned (deseasonalized-trend)', 
+           y='Average Time to Put Out (days, deseasonalized-trend)'))
 
 pathplot.save('avg_pathplots\\trends.png')
 # Save the new plots

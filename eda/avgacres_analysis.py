@@ -20,7 +20,7 @@ data['acres_burned'] = pd.read_csv(data_path, usecols=['TOTALACRES'])
 data['year'] = pd.read_csv(data_path, usecols=['FIREYEAR'])
 
 #modify range
-data = data[data['year'] > 1900]
+data = data[data['year'] > 1986]
 
 
 # Calculate average acres burned per year, only for years where fires occurred
@@ -69,7 +69,7 @@ linreg1_plot = (ggplot(linreg1, aes(x='year', y='avg_acres_year_trend'))
                ha='left', va='bottom', size=10, color='red'))
 
 # Save the plot
-linreg1_plot.save('temp-plots/1950-1960.png')
+#linreg1_plot.save('temp-plots/1950-1960.png')
 
 linreg3 = avgacres_linreg_df[(avgacres_linreg_df['year'] >= 1970) & (avgacres_linreg_df['year'] <= 1980)].dropna()
 linreg4 = avgacres_linreg_df[(avgacres_linreg_df['year'] >= 1980) & (avgacres_linreg_df['year'] <= 1990)].dropna()
@@ -80,19 +80,19 @@ linreg7 = avgacres_linreg_df[(avgacres_linreg_df['year'] >= 2020)].dropna()
 print(linreg1)
 
 
-
-# Print the trend component values for each year, dropping NaN values
-avgacres_seasonal_df_printable = pd.DataFrame({
-    'year': average_acres_burned_per_year.index,
-    'trend': aaDeco.trend
-}).dropna().reset_index(drop=True)
-
 linreg1_data = (ggplot(linreg1, aes(x='year', y='avg_acres_year_trend'))
     + geom_point()
     + labs(title='AvgAcres Trend for 1950-1960',
            x='Year',
            y='Trend (Acres Burned)'))
 
+
+
+# Print the trend component values for each year, dropping NaN values
+avgacres_seasonal_df_printable = pd.DataFrame({
+    'year': average_acres_burned_per_year.index,
+    'trend': aaDeco.trend
+}).dropna().reset_index(drop=True)
 
 # Plot the seasonal component
 avgacres_seasonal_plot = (ggplot(avgacres_seasonal_df, aes(x='year', y='seasonal'))
@@ -104,9 +104,9 @@ avgacres_seasonal_plot = (ggplot(avgacres_seasonal_df, aes(x='year', y='seasonal
 # Plot the trend component
 avgacres_trend_plot = (ggplot(avgacres_seasonal_df, aes(x='year', y='trend'))
     + geom_line()
-    + labs(title='Trend Component of Average Acres Burned',
+    + labs(title='Fire Acreage Trend, National Average',
            x='Year',
-           y='Avg Acres Burned'))
+           y='Acreage (deasonalized-average)'))
 
 # Plot the residual component
 avgacres_resid_plot = (ggplot(avgacres_seasonal_df, aes(x='year', y='resid'))
@@ -115,7 +115,16 @@ avgacres_resid_plot = (ggplot(avgacres_seasonal_df, aes(x='year', y='resid'))
            x='Year',
            y='Avg Acres Burned'))
 
-# Save the plots
-#avgacres_trend_plot.save('results-gen/avgacres_trend.png')
+# Plot the average acres burned per year
+avgacres_burned_vs_year_plot = (ggplot(average_acres_burned_per_year.reset_index(), aes(x='year', y='avg_acres_year'))
+    + geom_line()
+    + geom_point()
+    + labs(title='Average Acres Burned Per Year',
+           x='Year',
+           y='Average Acres Burned'))
+
+
+
+avgacres_trend_plot.save('results-gen/avgacres_trend.png')
 #avgacres_resid_plot.save('results-gen/avgacres_residual.png')
 

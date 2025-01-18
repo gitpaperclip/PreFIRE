@@ -18,7 +18,7 @@ data['time_to_put_out'] = (data['end_time'] - data['start_time']).dt.total_secon
 data = data[(data['time_to_put_out'] > 0) & (data['time_to_put_out'] <= 365)]
 data['acres_burned'] = pd.read_csv(data_path, usecols=['TOTALACRES'])
 data['year'] = pd.read_csv(data_path, usecols=['FIREYEAR'])
-data = data[data['year'] > 1900]
+data = data[data['year'] > 1986]
 
 average_acres_burned_per_year = data[data['acres_burned'] > 0].groupby('year')['acres_burned'].mean().reset_index()
 average_acres_burned_per_year.columns = ['year', 'avg_acres_year']
@@ -36,28 +36,30 @@ pathplot = (ggplot(data, aes(x='average_acres_burned_df', y='average_time_out_df
            x='Average Acres burned',
            y='Average time to put out'))
 
-avgacres = (ggplot(data, aes(x='year', y='avg_acres_year', color='year'))
+avgacres = (ggplot(average_acres_burned_per_year, aes(x='year', y='avg_acres_year'))
     + geom_line()
-    + labs(title='Year vs Average Acres Burned',
+    + labs(title='National Average for Fire Acreage',
            x='Year',
            y='Average Acres Burned'))
 
 rollingacres  = (ggplot(data, aes(x='year', y='seasonal_df', color='year'))
     + geom_point()
-    + labs(title='Year vs Average Acres Burned',
+    + labs(title='National Average for Fire Acreage, Rolling',
            x='Year',
            y='Average Acres Burned'))
 
-avgtimeout = (ggplot(data, aes(x='year', y='avg_time_year', color='year'))
+avgtimeout = (ggplot(average_time_to_put_out_per_year, aes(x='year', y='avg_time_year'))
     + geom_line()
-    + labs(title='Year vs Average Time To Put Out',
+    + labs(title='National Average for Fire Suppression',
            x='Year',
-           y='Average Time To Put Out'))
+           y='Average Time To Put Out (days)'))
 
 
 #seasonal_plot.save('results-gen\\rolling.png')
 # Save the new plots
-#avgtimeout.save('results-gen\\average_time_to_put_out_plot.png')
+avgtimeout.save('results-gen\\average_time_to_put_out_plot.png')
+avgacres.save('results-gen\\average_acres_burned_plot.png')
+
 # Save the plot
 #pathplot.save('results-gen\\fire_plot.png')
 #timeout_vs_year.save('results-gen\\fire_plot_2.png')
